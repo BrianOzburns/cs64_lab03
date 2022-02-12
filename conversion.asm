@@ -18,6 +18,7 @@ conv:
         blt $a0 2 post_if
         addi $a1 $a1 -1
         post_if:
+        addi $a0 $a0 1
 
         addi $t0 $t0 1
         blt $t0 8 loop
