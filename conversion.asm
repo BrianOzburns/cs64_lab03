@@ -19,7 +19,7 @@ conv:
         addi $a1 $a1 -1
         post_if:
 
-        addi $t0 1
+        addi $t0 $t0 1
         blt $t0 8 loop
 
     move $v0 $t1
