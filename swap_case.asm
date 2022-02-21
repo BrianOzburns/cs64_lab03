@@ -106,9 +106,11 @@ Swap_Case:
     # upper +32 --> lower
     # lower -32 --> upper
 
-    move $t1 $s0 # use t1 as address of string stored in s0
+    # addiu $sp $sp -100
+
+    move $t1 $a0 # use t1 as address of string stored in s0
     li $t8 0
-    
+    # la $t9 0($sp)
 
     loop:
 
@@ -128,9 +130,15 @@ Swap_Case:
 
         is_upper_character:
             addi $t0 $t0 32
+            # sb $t0 0($t9)
+            sb $t0 0($t1)
+            j print_convention
 
         is_lower_character:
             addi $t0 $t0 -32
+            # sb $t0 0($t9)
+            sb $t0 0($t1)
+            j print_convention
 
         print_convention:
             li $v0 11
@@ -150,11 +158,14 @@ Swap_Case:
         not_character:
             addi $t1 $t1 1
             addi $t8 $t8 1
+            addi $t9 1
 
         #beq $t1 100 post_loop
         beq $t8 25 post_loop
         j loop
 
     post_loop:
+    # lw $s0 0($sp)
+    # addiu $sp $sp 100
     # Do not remove this line
     jr $ra
