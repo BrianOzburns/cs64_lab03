@@ -245,22 +245,6 @@ sort_by_row:
             jal average_row
             move $t9 $v0
 
-            li $v0 1
-            lw $t8 0($s6)
-            move $a0 $t8
-            syscall
-
-            li $t4 -4
-            mult $t4 $s2
-            mflo $t6
-            add $s6 $s6 $t6
-
-            li $v0 1
-            lw $t8 0($s6)
-            move $a0 $t8
-            syscall
-            j in_order
-
             bge $t9 $s5 in_order
             # move $a0 $s5 # need to move address of row j
             # move $a1 $t9 # need to move address of row (j+1)
