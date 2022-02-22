@@ -180,7 +180,7 @@ sort_by_row:
 	# offset = (( 3 * 1) + 2) * 4 = 20         
     # Data_size=4 because we are working with integers
 
-    addi $sp, $sp, -32
+    addi $sp, $sp, -36
     sw $s0, 0($sp) 
     sw $s1, 4($sp)
     sw $s2, 8($sp)
@@ -188,89 +188,75 @@ sort_by_row:
     sw $s4, 16($sp)
     sw $s5, 20($sp)
     sw $s6, 24($sp)
-    sw $ra, 28($sp)
+    sw $s7, 28($sp)
+    sw $ra, 32($sp)
 
     move $s0 $a0
     move $s1 $a1
     move $s2 $a2
     
     li $s3 0 # outer loop counter
-    li $s4 0 # inner loop counter
+    li $s4 1 # inner loop counter
 
     outer_loop:
 
         inner_loop:
 
-            #li $t0 0 # Let $t0 be the address offset
-            #li $t1 4
-            #mult $s2 $t1
+            # Calculate address of row j
+            #li $t0 4
+            #mult $s1 $t0
             #mflo $t0
-            #mult $t0 $s4
+            #mult $t0 $s3
             #mflo $t0
             #add $s6 $t0 $s0
+
+            # offset  =  ((column_Size * current_Row) + current_Column) * Data_size
             mult $s2 $s3
             mflo $t0
-            add $t0 $t0 $s4
             li $t1 4
             mult $t0 $t1
             mflo $t0
             add $s6 $t0 $s0
 
-            move $a0 $s6 # Find average of row j
+            # Find average of row j
+            move $a0 $s6
             jal average_row
             move $s5 $v0
 
-            #addi $s6 $s6 12
-            ##li $t0 0 # Let $t0 be the address offset
-            ##li $t1 4
-            ##mult $s2 $t1
-            ##mflo $t0
-            ##addi $t6 $s4 1
-            ##mult $t0 $t6
-            ##mflo $t0
-            ##add $s6 $t0 $s0
+            # Calculate address of row (j+1)
+            #li $t0 4
+            #mult $s1 $t0
+            #mflo $t0
+            #mult $t0 $s4
+            #mflo $t0
+            #add $s7 $t0 $s0
+
             # offset  =  ((column_Size * current_Row) + current_Column) * Data_size
-            addi $t6 $s3 1
-            mult $s2 $t6
-           #mult $s2 $s3
+            mult $s2 $s4
             mflo $t0
-            add $t0 $t0 $s4
             li $t1 4
             mult $t0 $t1
             mflo $t0
-            add $s6 $t0 $s0
-            #addi $s6 $s6 12
+            add $s7 $t0 $s0
 
-            move $a0 $s6 # Find average of row (j+1)
+            # Find average of row (j+1)
+            move $a0 $s7
             jal average_row
             move $t9 $v0
 
             bge $t9 $s5 in_order
-            # move $a0 $s5 # need to move address of row j
-            # move $a1 $t9 # need to move address of row (j+1)
-
-            move $a0 $s6
-            li $t4 -4
-            mult $t4 $s2
-            mflo $t6
-            add $s6 $s6 $t6
+            move $a0 $s7
             move $a1 $s6
 
             jal swap_rows
-            #jal ConventionCheck
 
             in_order:
 
             addi $s4 $s4 1
-            addi $t5 $s1 -1
-            sub $t6 $t5 $s3 # inner_loop comparison
-
-            blt $s4 $t6 inner_loop
-
-        addi $t5 $s1 -1 # outer_loop comparison
+            blt $s4 $s2 inner_loop
 
         addi $s3 $s3 1
-        blt $s3 $t5 outer_loop
+        blt $s3 $s2 outer_loop
 
     lw $s0, 0($sp) 
     lw $s1, 4($sp) 
@@ -279,8 +265,9 @@ sort_by_row:
     lw $s4, 16($sp)
     lw $s5, 20($sp)
     lw $s6, 24($sp)
-    lw $ra, 28($sp)
-    addiu $sp, $sp, 32
+    lw $s7, 28($sp)
+    lw $ra, 32($sp)
+    addiu $sp, $sp, 36
 
     # Do not remove this line
     jr $ra
