@@ -254,6 +254,8 @@ sort_by_row:
 
             addi $s4 $s4 1
             blt $s4 $s2 inner_loop
+            move $s4 $s3
+            addi $s4 2
 
         addi $s3 $s3 1
         blt $s3 $s2 outer_loop
