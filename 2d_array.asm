@@ -202,14 +202,6 @@ sort_by_row:
 
         inner_loop:
 
-            # Calculate address of row j
-            #li $t0 4
-            #mult $s1 $t0
-            #mflo $t0
-            #mult $t0 $s3
-            #mflo $t0
-            #add $s6 $t0 $s0
-
             # offset  =  ((column_Size * current_Row) + current_Column) * Data_size
             mult $s2 $s3
             mflo $t0
@@ -222,14 +214,6 @@ sort_by_row:
             move $a0 $s6
             jal average_row
             move $s5 $v0
-
-            # Calculate address of row (j+1)
-            #li $t0 4
-            #mult $s1 $t0
-            #mflo $t0
-            #mult $t0 $s4
-            #mflo $t0
-            #add $s7 $t0 $s0
 
             # offset  =  ((column_Size * current_Row) + current_Column) * Data_size
             mult $s2 $s4
